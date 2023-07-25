@@ -1,9 +1,16 @@
+@import url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@700&display=swap");
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: Atkinson Hyperlegible;
+  font-weight: 700;
+  font-style: normal;
 }
 #root {
   height: 100vh;
+  background-color: #152938;
+}
+body {
   background-color: #152938;
 }

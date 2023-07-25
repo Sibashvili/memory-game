@@ -1,10 +1,16 @@
 import { useState } from "react";
+import { Route, Routes } from "react-router-dom";
 
 import "./App.css";
 
-import startPage from "./Components/startPage";
+import StartPage from "./Components/StartPage";
 function App() {
-  const [count, setCount] = useState(0);
-
-  return <></>;
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<StartPage />} />
+      </Routes>
+    </>
+  );
 }
+export default App;
