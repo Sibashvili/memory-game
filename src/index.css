@@ -14,3 +14,12 @@
 body {
   background-color: #152938;
 }
+
+@keyframes ballRotation {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}

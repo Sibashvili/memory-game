@@ -1,15 +1,44 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-export default function StartPage() {
+type propsType = {
+  selectedGridSize: number;
+  setSelectedGridSize: React.Dispatch<React.SetStateAction<number>>;
+  selectedOption: string;
+  setSelectedOption: React.Dispatch<React.SetStateAction<string>>;
+};
+
+export default function StartPage({
+  setSelectedGridSize,
+  selectedGridSize,
+  selectedOption,
+  setSelectedOption,
+}: propsType) {
+  const handleGridSizeSelect = (size: number) => {
+    setSelectedGridSize(size);
+  };
+  const handleChooseOption = (choose: string) => {
+    setSelectedOption(choose);
+  };
+
   return (
     <Body>
       <HeadTitle>memory</HeadTitle>
       <Card>
         <Select>Select Theme</Select>
         <HeadSection>
-          <Number>Numbers</Number>
-          <Cards>Cards</Cards>
+          <Number
+            isChoose={selectedOption === Number}
+            onClick={() => handleChooseOption("Numbers")}
+          >
+            Numbers
+          </Number>
+          <Cards
+            isChoose={selectedOption === Card}
+            onClick={() => handleChooseOption("Cards")}
+          >
+            Cards
+          </Cards>
         </HeadSection>
         <Title>Numbers of Players</Title>
         <PlayerNum>
@@ -20,10 +49,20 @@ export default function StartPage() {
         </PlayerNum>
         <Grid>Grid Size</Grid>
         <Size>
-          <GridSize>4x4</GridSize>
-          <GridSize>6x6</GridSize>
+          <GridSize
+            isSelected={selectedGridSize === 4}
+            onClick={() => handleGridSizeSelect(4)}
+          >
+            4x4
+          </GridSize>
+          <GridSize
+            isSelected={selectedGridSize === 6}
+            onClick={() => handleGridSizeSelect(6)}
+          >
+            6x6
+          </GridSize>
         </Size>
-        <Link to="/gamepage">
+        <Link to={`/gamepage`}>
           <Start>Start Game</Start>
         </Link>
       </Card>
@@ -43,7 +82,7 @@ const HeadTitle = styled.a`
   margin-top: 80px;
   padding-bottom: 45px;
 `;
-const Card = styled.section`
+const Card = styled.section<{ isChoose: string }>`
   width: 327px;
   height: 386px;
 
@@ -62,7 +101,7 @@ const HeadSection = styled.div`
   padding-left: 24px;
   padding-right: 24px;
 `;
-const Number = styled.button`
+const Number = styled.button<{ isChoose: string }>`
   width: 134px;
   height: 40px;
   border: none;
@@ -112,10 +151,10 @@ const Size = styled.div`
   padding-left: 24px;
   gap: 11px;
   margin-top: 11px;
-  cursor: pointer;
+
   position: relative;
 `;
-const GridSize = styled.button`
+const GridSize = styled.button<{ isSelected: boolean }>`
   width: 134px;
   height: 40px;
   background-color: #bcced9;
