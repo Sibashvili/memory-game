@@ -1,24 +1,26 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Timer from "./Timer";
+import Multi from "./Multiplayer";
 
 import Card from "../assets/card-game.png";
 import Child from "../assets/child-game.png";
 import Coin from "../assets/coin.png";
-import Fruit from "../assets/fruit (1).png";
+import Fruit from "../assets/fruit(1).png";
 import Gamepng from "../assets/game.png";
-import Gamepad from "../assets/gamepad (1).png";
+import Gamepad from "../assets/gamepad(1).png";
 import Load from "../assets/load.png";
 import Fruits from "../assets/fruit.png";
 import Memcar from "../assets/memory-card.png";
-import Memcard1 from "../assets/memory-game (1).png";
-import Memcard2 from "../assets/memory-game (2).png";
-import Memcard3 from "../assets/memory-game (3).png";
+import Memcard1 from "../assets/memory-game(1).png";
+import Memcard2 from "../assets/memory-game(2).png";
+import Memcard3 from "../assets/memory-game(3).png";
 import Memcard4 from "../assets/memory-game.png";
 import Trasfer from "../assets/memory-transfer.png";
 import Memory from "../assets/memory.png";
 import Puzzle from "../assets/puzzle-piece.png";
-import Save from "../assets/save (1).png";
+import Save from "../assets/save(1).png";
+
 type propsType = {
   selectedGridSize: number;
   selectedOption: string;
@@ -27,12 +29,23 @@ function Game({ selectedGridSize, selectedOption }: propsType) {
   const [menu, setMenu] = useState<boolean>(false);
   const [flippedBalls, setFlippedBalls] = useState<number[]>([]);
   const [matchedPairs, setMatchedPairs] = useState<number[]>([]);
-  const [numbers, setNumbers] = useState<number[]>([]);
+  const [resultGrid, setResultGrid] = useState<number>();
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [moveCount, setMoveCount] = useState<number>(0);
   const [items, setItems] = useState<string[]>([]);
+  const [gridSize, setGridSize] = useState<number>(selectedGridSize);
 
-  const gridSize = selectedGridSize;
+  // const gridSize = selectedGridSize;
+  // const modifyGrid = () => {
+  //   if (gridSize === 4) {
+  //     setResultGrid(8);
+  //   }
+  //   if (gridSize === 8) {
+  //     setResultGrid(16);
+  //   }
+  // };
+  console.log(resultGrid);
+  console.log(gridSize);
   const gridRows = gridSize;
   const gridColumns = gridSize;
   const imageArray = [
@@ -57,19 +70,22 @@ function Game({ selectedGridSize, selectedOption }: propsType) {
 
   const generateItems = (numPairs: number, selectedOption: string) => {
     const items = [];
+    console.log(numPairs);
     if (selectedOption === "Numbers") {
       for (let i = 1; i <= numPairs; i++) {
         items.push(i.toString());
       }
-    } else if (selectedOption === "Icons") {
+    } else if (selectedOption === "Cards") {
       for (let i = 0; i < numPairs; i++) {
         items.push(imageArray[i]);
       }
     }
     return items;
   };
+  console.log(items);
   useEffect(() => {
-    const generatedItems = generateItems(gridSize * gridSize, selectedOption);
+    const generatedItems = generateItems(gridSize, selectedOption);
+
     const shuffledItems = shuffleArray([...generatedItems, ...generatedItems]);
     setItems(shuffledItems);
   }, [gridSize]);
@@ -99,7 +115,7 @@ function Game({ selectedGridSize, selectedOption }: propsType) {
     if (flippedBalls.length === 1) {
       const [index1] = flippedBalls;
 
-      if (numbers[index1] === numbers[index]) {
+      if (items[index1] === items[index]) {
         setMatchedPairs((prev) => [...prev, index1, index]);
         return;
       }
@@ -138,7 +154,7 @@ function Game({ selectedGridSize, selectedOption }: propsType) {
       )}
       <Center>
         <BallGrid rows={gridRows} columns={gridColumns}>
-          {numbers.map((number, index) => (
+          {items.map((item, index) => (
             <Ball
               key={index}
               isMatched={matchedPairs.includes(index)}
@@ -146,9 +162,13 @@ function Game({ selectedGridSize, selectedOption }: propsType) {
               onClick={() => handleBallClick(index)}
               gridSize={gridSize}
             >
-              {flippedBalls.includes(index) || matchedPairs.includes(index)
-                ? number
-                : null}
+              {flippedBalls.includes(index) || matchedPairs.includes(index) ? (
+                selectedOption === "Numbers" ? (
+                  item
+                ) : (
+                  <Image src={item} alt={`Cards ${index}`} />
+                )
+              ) : null}
             </Ball>
           ))}
         </BallGrid>
@@ -160,6 +180,7 @@ function Game({ selectedGridSize, selectedOption }: propsType) {
           <NumMove>{moveCount}</NumMove>
         </Flexdiv>
       </BottomDiv>
+      <Multi />
     </Main>
   );
 }
@@ -253,6 +274,7 @@ const Ball = styled.div<{
   color: #fcfcfc;
   cursor: pointer;
   transition: background-color 0.3s;
+  overflow: hidden;
 
   animation: ${(props) =>
     props.isFlipped ? "ballRotation 0.7s forwards" : "none"};
@@ -271,6 +293,7 @@ const MoveCounter = styled.div`
 const BottomDiv = styled.div`
   display: flex;
   gap: 25px;
+  display: none;
 `;
 
 const Flexdiv = styled.div`
@@ -287,4 +310,8 @@ const NumMove = styled.div`
   font-size: 24px;
   color: #304859;
 `;
+const Image = styled.img`
+  width: 100%;
+`;
+
 export default Game;

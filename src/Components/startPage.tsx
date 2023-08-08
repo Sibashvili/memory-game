@@ -20,7 +20,7 @@ export default function StartPage({
   const handleChooseOption = (choose: string) => {
     setSelectedOption(choose);
   };
-
+  console.log(selectedGridSize);
   return (
     <Body>
       <HeadTitle>memory</HeadTitle>
@@ -34,7 +34,7 @@ export default function StartPage({
             Numbers
           </Number>
           <Cards
-            isChoose={selectedOption === Card}
+            isChoose={selectedOption === Cards}
             onClick={() => handleChooseOption("Cards")}
           >
             Cards
@@ -82,7 +82,7 @@ const HeadTitle = styled.a`
   margin-top: 80px;
   padding-bottom: 45px;
 `;
-const Card = styled.section<{ isChoose: string }>`
+const Card = styled.section`
   width: 327px;
   height: 386px;
 
@@ -101,7 +101,7 @@ const HeadSection = styled.div`
   padding-left: 24px;
   padding-right: 24px;
 `;
-const Number = styled.button<{ isChoose: string }>`
+const Number = styled.button<{ isChoose: boolean }>`
   width: 134px;
   height: 40px;
   border: none;
@@ -110,7 +110,7 @@ const Number = styled.button<{ isChoose: string }>`
   background-color: #bcced9;
   cursor: pointer;
 `;
-const Cards = styled.button`
+const Cards = styled.button<{ isChoose: boolean }>`
   width: 134px;
   height: 40px;
   border: none;
