@@ -1,11 +1,13 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-type propsType = {
+type props = {
   selectedGridSize: number;
   setSelectedGridSize: React.Dispatch<React.SetStateAction<number>>;
   selectedOption: string;
   setSelectedOption: React.Dispatch<React.SetStateAction<string>>;
+  selectedNumPlayer: number;
+  setSelectedNumPlayer: React.Dispatch<React.SetStateAction<number>>;
 };
 
 export default function StartPage({
@@ -13,14 +15,19 @@ export default function StartPage({
   selectedGridSize,
   selectedOption,
   setSelectedOption,
-}: propsType) {
+  selectedNumPlayer,
+  setSelectedNumPlayer,
+}: props) {
   const handleGridSizeSelect = (size: number) => {
     setSelectedGridSize(size);
   };
   const handleChooseOption = (choose: string) => {
     setSelectedOption(choose);
   };
-  console.log(selectedGridSize);
+  const handleNumPlayerSelect = (numPlayers: number) => {
+    setSelectedNumPlayer(numPlayers);
+  };
+
   return (
     <Body>
       <HeadTitle>memory</HeadTitle>
@@ -28,13 +35,13 @@ export default function StartPage({
         <Select>Select Theme</Select>
         <HeadSection>
           <Number
-            isChoose={selectedOption === Number}
+            isChoose={selectedOption === "Numbers"}
             onClick={() => handleChooseOption("Numbers")}
           >
             Numbers
           </Number>
           <Cards
-            isChoose={selectedOption === Cards}
+            isChoose={selectedOption === "Cards"}
             onClick={() => handleChooseOption("Cards")}
           >
             Cards
@@ -42,10 +49,30 @@ export default function StartPage({
         </HeadSection>
         <Title>Numbers of Players</Title>
         <PlayerNum>
-          <Num>1</Num>
-          <Num>2</Num>
-          <Num>3</Num>
-          <Num>4</Num>
+          <Num
+            isSelected={selectedNumPlayer === 1}
+            onClick={() => handleNumPlayerSelect(1)}
+          >
+            1
+          </Num>
+          <Num
+            isSelected={selectedNumPlayer === 2}
+            onClick={() => handleNumPlayerSelect(2)}
+          >
+            2
+          </Num>
+          <Num
+            isSelected={selectedNumPlayer === 3}
+            onClick={() => handleNumPlayerSelect(3)}
+          >
+            3
+          </Num>
+          <Num
+            isSelected={selectedNumPlayer === 4}
+            onClick={() => handleNumPlayerSelect(4)}
+          >
+            4
+          </Num>
         </PlayerNum>
         <Grid>Grid Size</Grid>
         <Size>
@@ -81,6 +108,9 @@ const HeadTitle = styled.a`
   justify-content: center;
   margin-top: 80px;
   padding-bottom: 45px;
+  @media (min-width: 768px) {
+    font-size: 40px;
+  }
 `;
 const Card = styled.section`
   width: 327px;
@@ -89,11 +119,19 @@ const Card = styled.section`
   background-color: #fcfcfc;
   border-radius: 10px;
   margin: auto;
+  @media (min-width: 768px) {
+    width: 654px;
+    height: 559px;
+    padding: 56px;
+  }
 `;
 const Select = styled.h1`
   font-size: 15px;
   color: #7191a5;
   padding: 24px;
+  @media (min-width: 768px) {
+    font-size: 20px;
+  }
 `;
 const HeadSection = styled.div`
   display: flex;
@@ -107,8 +145,13 @@ const Number = styled.button<{ isChoose: boolean }>`
   border: none;
   border-radius: 26px;
   color: #fcfcfc;
-  background-color: #bcced9;
+  background-color: ${({ isChoose }) => (isChoose ? "#304859" : "#bcced9")};
   cursor: pointer;
+  @media (min-width: 768px) {
+    width: 256px;
+    height: 52px;
+    font-size: 26px;
+  }
 `;
 const Cards = styled.button<{ isChoose: boolean }>`
   width: 134px;
@@ -116,14 +159,22 @@ const Cards = styled.button<{ isChoose: boolean }>`
   border: none;
   border-radius: 26px;
   color: #fcfcfc;
-  background-color: #bcced9;
+  background-color: ${({ isChoose }) => (isChoose ? "#304859" : "#bcced9")};
   cursor: pointer;
+  @media (min-width: 768px) {
+    width: 256px;
+    height: 52px;
+    font-size: 26px;
+  }
 `;
 const Title = styled.h1`
   font-size: 15px;
   margin-top: 24px;
   padding-left: 24px;
   color: #7191a5;
+  @media (min-width: 768px) {
+    font-size: 20px;
+  }
 `;
 const PlayerNum = styled.div`
   display: flex;
@@ -131,20 +182,28 @@ const PlayerNum = styled.div`
   padding-left: 24px;
   margin-top: 11px;
 `;
-const Num = styled.button`
+const Num = styled.button<{ isSelected: boolean }>`
   border: none;
   border-radius: 26px;
   width: 62px;
   height: 40px;
-  background-color: #bcced9;
+  background-color: ${({ isSelected }) => (isSelected ? "#304859" : "#bcced9")};
   color: #fcfcfc;
   cursor: pointer;
+  @media (min-width: 768px) {
+    width: 119px;
+    height: 52px;
+    font-size: 26px;
+  }
 `;
 const Grid = styled.h1`
   color: #7191a5;
   font-size: 15px;
   padding-left: 24px;
   margin-top: 24px;
+  @media (min-width: 768px) {
+    font-size: 20px;
+  }
 `;
 const Size = styled.div`
   display: flex;
@@ -157,11 +216,16 @@ const Size = styled.div`
 const GridSize = styled.button<{ isSelected: boolean }>`
   width: 134px;
   height: 40px;
-  background-color: #bcced9;
+  background-color: ${({ isSelected }) => (isSelected ? "#304859" : "#bcced9")};
   border: none;
   border-radius: 26px;
   color: #fcfcfc;
   cursor: pointer;
+  @media (min-width: 768px) {
+    width: 256px;
+    height: 52px;
+    font-size: 26px;
+  }
 `;
 const Start = styled.button`
   width: 279px;
@@ -172,6 +236,14 @@ const Start = styled.button`
   margin-top: 32px;
   font-size: 18px;
   color: #fcfcfc;
-  margin-left: 24px;
+
+  margin: auto;
+  margin-top: 32px;
   cursor: pointer;
+  underline: none;
+  @media (min-width: 768px) {
+    width: 541px;
+    height: 52px;
+    font-size: 26px;
+  }
 `;

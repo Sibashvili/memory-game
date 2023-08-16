@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Timer from "./Timer";
 import Multi from "./Multiplayer";
+import Result from "./Resultinfo";
 
 import Card from "../assets/card-game.png";
 import Child from "../assets/child-game.png";
@@ -20,34 +21,40 @@ import Trasfer from "../assets/memory-transfer.png";
 import Memory from "../assets/memory.png";
 import Puzzle from "../assets/puzzle-piece.png";
 import Save from "../assets/save(1).png";
+import SingleResult from "./SingleResult";
+import { Link } from "react-router-dom";
 
 type propsType = {
   selectedGridSize: number;
   selectedOption: string;
+  selectedNumPlayer: number;
 };
-function Game({ selectedGridSize, selectedOption }: propsType) {
+function Game({
+  selectedGridSize,
+  selectedOption,
+  selectedNumPlayer,
+}: propsType) {
   const [menu, setMenu] = useState<boolean>(false);
   const [flippedBalls, setFlippedBalls] = useState<number[]>([]);
+  const [players, setPlayers] = useState(
+    Array.from({ length: selectedNumPlayer }, (_, index) => ({
+      name: `P${index + 1}`,
+      score: 0,
+    }))
+  );
+  const [seconds, setSeconds] = useState<number>(0);
   const [matchedPairs, setMatchedPairs] = useState<number[]>([]);
-  const [resultGrid, setResultGrid] = useState<number>();
+  const [currentPlayer, setCurrentPlayer] = useState<number>(0);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [moveCount, setMoveCount] = useState<number>(0);
   const [items, setItems] = useState<string[]>([]);
-  const [gridSize, setGridSize] = useState<number>(selectedGridSize);
 
-  // const gridSize = selectedGridSize;
-  // const modifyGrid = () => {
-  //   if (gridSize === 4) {
-  //     setResultGrid(8);
-  //   }
-  //   if (gridSize === 8) {
-  //     setResultGrid(16);
-  //   }
-  // };
-  console.log(resultGrid);
-  console.log(gridSize);
+  const gridSize = selectedGridSize;
+
   const gridRows = gridSize;
   const gridColumns = gridSize;
+  const allPairsMatched = matchedPairs.length === gridSize * gridSize;
+
   const imageArray = [
     Card,
     Child,
@@ -66,11 +73,12 @@ function Game({ selectedGridSize, selectedOption }: propsType) {
     Memory,
     Puzzle,
     Save,
+    Puzzle,
   ];
 
   const generateItems = (numPairs: number, selectedOption: string) => {
     const items = [];
-    console.log(numPairs);
+
     if (selectedOption === "Numbers") {
       for (let i = 1; i <= numPairs; i++) {
         items.push(i.toString());
@@ -82,9 +90,14 @@ function Game({ selectedGridSize, selectedOption }: propsType) {
     }
     return items;
   };
-  console.log(items);
   useEffect(() => {
-    const generatedItems = generateItems(gridSize, selectedOption);
+    setCurrentPlayer(moveCount % selectedNumPlayer);
+  }, [moveCount, selectedNumPlayer]);
+  useEffect(() => {
+    const generatedItems = generateItems(
+      (gridSize * gridSize) / 2,
+      selectedOption
+    );
 
     const shuffledItems = shuffleArray([...generatedItems, ...generatedItems]);
     setItems(shuffledItems);
@@ -104,6 +117,14 @@ function Game({ selectedGridSize, selectedOption }: propsType) {
     }
     return shuffledArray;
   };
+  const handleMatch = (playerIndex: number) => {
+    setPlayers((prevPlayers) => {
+      const updatedPlayers = [...prevPlayers];
+      updatedPlayers[playerIndex].score += 1 / 2;
+      return updatedPlayers;
+    });
+  };
+
   const handleBallClick = (index: number) => {
     if (
       isAnimating ||
@@ -116,7 +137,9 @@ function Game({ selectedGridSize, selectedOption }: propsType) {
       const [index1] = flippedBalls;
 
       if (items[index1] === items[index]) {
+        setFlippedBalls([]);
         setMatchedPairs((prev) => [...prev, index1, index]);
+        handleMatch(currentPlayer);
         return;
       }
     }
@@ -124,10 +147,14 @@ function Game({ selectedGridSize, selectedOption }: propsType) {
     setFlippedBalls((prev) => [...prev, index]);
   };
   useEffect(() => {
+    console.log(flippedBalls);
     if (flippedBalls.length === 2) {
       const [index1, index2] = flippedBalls;
       if (items[index1] === items[index2]) {
         setMatchedPairs((prev) => [...prev, index1, index2]);
+        setFlippedBalls([]);
+      } else {
+        setCurrentPlayer((prevIndex) => (prevIndex + 1) % selectedNumPlayer);
       }
 
       setIsAnimating(true);
@@ -137,21 +164,48 @@ function Game({ selectedGridSize, selectedOption }: propsType) {
         handleMove();
       }, 1000);
     }
-  }, [flippedBalls, items, isAnimating]);
+  }, [flippedBalls, items, matchedPairs]);
+  const toggleMenu = () => {
+    setMenu((prevMenu) => !prevMenu);
+    document.body.style.overflow = menu ? "auto" : "hidden";
+  };
+  const handleRestart = () => {
+    setFlippedBalls([]);
+    setPlayers(
+      Array.from({ length: selectedNumPlayer }, (_, index) => ({
+        name: `P${index + 1}`,
+        score: 0,
+      }))
+    );
+    setSeconds(0);
+    setMatchedPairs([]);
+    setCurrentPlayer(0);
+    setMoveCount(0);
+  };
 
   return (
     <Main>
-      <Head>
-        <Mem>memory</Mem>
-        <Menu onClick={() => setMenu(!menu)}>Menu</Menu>
-      </Head>
       {menu && (
-        <MenuBar>
-          <MenuButton>Restart</MenuButton>
-          <MenuButton>New Game</MenuButton>
-          <MenuButton>Resume</MenuButton>
-        </MenuBar>
+        <Backdrop onClick={toggleMenu}>
+          {" "}
+          <MenuBar>
+            <MenuButton menuOpen={menu} onClick={handleRestart}>
+              Restart
+            </MenuButton>
+            <Link to={`/startpage`}>
+              <MenuButton menuOpen={menu}>New Game</MenuButton>
+            </Link>
+            <MenuButton menuOpen={menu}>Resume</MenuButton>
+          </MenuBar>
+        </Backdrop>
       )}
+      <Head>
+        <Mem menuOpen={menu}>memory</Mem>
+        <Menu menuOpen={menu} onClick={toggleMenu}>
+          Menu
+        </Menu>
+      </Head>
+
       <Center>
         <BallGrid rows={gridRows} columns={gridColumns}>
           {items.map((item, index) => (
@@ -173,14 +227,35 @@ function Game({ selectedGridSize, selectedOption }: propsType) {
           ))}
         </BallGrid>
       </Center>
-      <BottomDiv>
-        <Timer />
-        <Flexdiv>
-          <MoveCounter>Moves </MoveCounter>
-          <NumMove>{moveCount}</NumMove>
-        </Flexdiv>
-      </BottomDiv>
-      <Multi />
+      {selectedNumPlayer === 1 && (
+        <BottomDiv>
+          {selectedNumPlayer === 1 && (
+            <Timer seconds={seconds} setSeconds={setSeconds} />
+          )}
+          <Flexdiv>
+            {selectedNumPlayer === 1 && (
+              <>
+                <MoveCounter>Moves</MoveCounter>
+                <NumMove>{moveCount}</NumMove>
+              </>
+            )}
+          </Flexdiv>
+        </BottomDiv>
+      )}
+      {selectedNumPlayer > 1 && (
+        <Multi players={players} currentPlayer={currentPlayer} />
+      )}
+      {selectedNumPlayer === 1 && allPairsMatched && (
+        <SingleResult
+          moveCount={moveCount}
+          seconds={seconds}
+          handleRestart={handleRestart}
+        />
+      )}
+
+      {selectedNumPlayer > 1 && allPairsMatched && (
+        <Result players={players} handleRestart={handleRestart} />
+      )}
     </Main>
   );
 }
@@ -189,6 +264,19 @@ interface BallGridProps {
   columns: number;
 }
 
+const Backdrop = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 const Main = styled.section`
   width: 100%;
   background-color: #fcfcfc;
@@ -199,18 +287,26 @@ const Head = styled.div`
   justify-content: space-between;
   padding: 24px;
   padding-bottom: 100px;
+  @media (min-width: 768px) {
+    padding-bottom: 50px;
+  }
 `;
-const Mem = styled.h1`
-  color: #152938;
+const Mem = styled.h1<{ menuOpen: boolean }>`
+  color: ${(props) => (props.menuOpen ? "#ffffff" : "#152938")};
+  @media (min-width: 768px) {
+    font-size: 40px;
+  }
 `;
-const Menu = styled.button`
+
+const Menu = styled.button<{ menuOpen: boolean }>`
   border: none;
   width: 78px;
   height: 40px;
-  background-color: #fda214;
+  background-color: ${(props) => (props.menuOpen ? "#dfe7ec" : "#fda214")};
   border-radius: 26px;
-  color: #fcfcfc;
+  color: ${(props) => (props.menuOpen ? "#304859" : "#fcfcfc")};
   cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
 `;
 const MenuBar = styled.div`
   width: 327px;
@@ -223,22 +319,18 @@ const MenuBar = styled.div`
   background-color: #f2f2f2;
 
   align-items: center;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 `;
-const MenuButton = styled.button`
+const MenuButton = styled.button<{ menuOpen: boolean }>`
   width: 279px;
   height: 48px;
   border-radius: 26px;
-  background-color: #dfe7ec;
-  color: #fcfcfc;
+  background-color: ${(props) => (props.menuOpen ? "#dfe7ec" : "#fda214")};
+  color: ${(props) => (props.menuOpen ? "#304859" : "#fcfcfc")};
   font-size: 18px;
   border: none;
-  color: #304859;
+  transition: background-color 0.3s, color 0.3s;
 
-  &: hover {
+  &:hover {
     background-color: #fda214;
     color: #fcfcfc;
   }
@@ -255,6 +347,16 @@ const BallGrid = styled.div<BallGridProps>`
   );
   gap: 10px;
   margin: 20px auto;
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(
+      ${(props) => props.columns},
+      ${(props) => (props.columns === 4 ? "100px" : "82px")}
+    );
+    grid-template-rows: repeat(
+      ${(props) => props.rows},
+      ${(props) => (props.rows === 4 ? "100px" : "82px ")}
+    );
+  }
 `;
 
 const Ball = styled.div<{
@@ -278,6 +380,9 @@ const Ball = styled.div<{
 
   animation: ${(props) =>
     props.isFlipped ? "ballRotation 0.7s forwards" : "none"};
+  @media (min-width: 768px) {
+    font-size: ${(props) => (props.gridSize === 6 ? "56px" : "44px")};
+  }
 `;
 const Center = styled.div`
   display: flex;
@@ -289,11 +394,19 @@ const MoveCounter = styled.div`
   margin-top: 10px;
   text-align: center;
   color: #7191a5;
+  @media (min-width: 768px) {
+    margin-top: 0px;
+  }
 `;
 const BottomDiv = styled.div`
   display: flex;
   gap: 25px;
-  display: none;
+  @media (min-width: 768px) {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: 25px;
+  }
 `;
 
 const Flexdiv = styled.div`
@@ -305,6 +418,16 @@ const Flexdiv = styled.div`
   background-color: #dfe7ec;
   border-radius: 5px;
   margin-top: 100px;
+  @media (min-width: 768px) {
+    width: 255px;
+    height: 72px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    margin-top: 0px;
+  }
 `;
 const NumMove = styled.div`
   font-size: 24px;
