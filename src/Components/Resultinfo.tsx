@@ -24,10 +24,12 @@ function Result({ players, handleRestart }: propsType) {
             </Player>
           ))}
         </Players>
-        <Res onClick={handleRestart}>Restart</Res>
-        <Link to={`/startpage`}>
-          <NewGame>Setup New Game</NewGame>
-        </Link>
+        <DivFlex>
+          <Res onClick={handleRestart}>Restart</Res>
+          <Link to={`/startpage`}>
+            <NewGame>Setup New Game</NewGame>
+          </Link>
+        </DivFlex>
       </Info>
     </ResultWin>
   );
@@ -42,6 +44,15 @@ const ResultWin = styled.div`
   left: 7%;
   margin: auto;
   border-radius: 10px;
+  @media (min-width: 768px) {
+    width: 654px;
+    height: 510px;
+    left: 8%;
+  }
+  @media (min-width: 1440px) {
+    left: 30%;
+    top: 17%;
+  }
 `;
 const Info = styled.div`
   display: flex;
@@ -52,12 +63,18 @@ const Win = styled.p`
   color: #152938;
   text-align: center;
   margin-top: 32px;
+  @media (min-width: 768px) {
+    font-size: 48px;
+  }
 `;
 const GameOver = styled.p`
   font-size: 14px;
   color: #7191a5;
   text-align: center;
   margin-top: 9px;
+  @media (min-width: 768px) {
+    font-size: 18px;
+  }
 `;
 const Players = styled.div`
   display: flex;
@@ -79,6 +96,10 @@ const Player = styled.div<{ isWinner: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  @media (min-width: 768px) {
+    width: 542px;
+    height: 72px;
+  }
 `;
 const Res = styled.button`
   width: 279px;
@@ -94,6 +115,12 @@ const Res = styled.button`
   justify-content: center;
   text-align: center;
   border-radius: 26px;
+  @media (min-width: 768px) {
+    width: 264px;
+    height: 52px;
+    font-size: 20px;
+    margin: 0;
+  }
 `;
 const NewGame = styled.button`
   width: 279px;
@@ -110,10 +137,24 @@ const NewGame = styled.button`
   text-align: center;
   border-radius: 26px;
   margin-top: 16px;
+  @media (min-width: 768px) {
+    width: 264px;
+    height: 52px;
+    font-size: 20px;
+    margin: 0;
+  }
 `;
 const Score = styled.h1<{ isWinner: boolean }>`
   font-size: 20px;
   font-weight: 700;
+`;
+const DivFlex = styled.div`
+  @media (min-width: 768px) {
+    display: flex;
+    margin-top: 40px;
+    gap: 14px;
+    justify-content: center;
+  }
 `;
 
 export default Result;

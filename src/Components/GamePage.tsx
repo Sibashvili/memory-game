@@ -38,7 +38,7 @@ function Game({
   const [flippedBalls, setFlippedBalls] = useState<number[]>([]);
   const [players, setPlayers] = useState(
     Array.from({ length: selectedNumPlayer }, (_, index) => ({
-      name: `P${index + 1}`,
+      name: `Player ${index + 1}`,
       score: 0,
     }))
   );
@@ -204,6 +204,12 @@ function Game({
         <Menu menuOpen={menu} onClick={toggleMenu}>
           Menu
         </Menu>
+        <But3>
+          <But1 onClick={handleRestart}>Restart</But1>
+          <Link to={`/startpage`}>
+            <But2>New Game</But2>
+          </Link>
+        </But3>
       </Head>
 
       <Center>
@@ -289,6 +295,14 @@ const Head = styled.div`
   padding-bottom: 100px;
   @media (min-width: 768px) {
     padding-bottom: 50px;
+    display: flex;
+    align-items: center;
+  }
+  @media (min-width: 1440px) {
+    padding-left: 165px;
+    @media (min-width: 1440px) {
+      padding-right: 165px;
+    }
   }
 `;
 const Mem = styled.h1<{ menuOpen: boolean }>`
@@ -307,6 +321,9 @@ const Menu = styled.button<{ menuOpen: boolean }>`
   color: ${(props) => (props.menuOpen ? "#304859" : "#fcfcfc")};
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s;
+  @media (min-width: 768px) {
+    display: none;
+  }
 `;
 const MenuBar = styled.div`
   width: 327px;
@@ -319,6 +336,9 @@ const MenuBar = styled.div`
   background-color: #f2f2f2;
 
   align-items: center;
+  @media (min-width: 768px) {
+    display: none;
+  }
 `;
 const MenuButton = styled.button<{ menuOpen: boolean }>`
   width: 279px;
@@ -356,6 +376,9 @@ const BallGrid = styled.div<BallGridProps>`
       ${(props) => props.rows},
       ${(props) => (props.rows === 4 ? "100px" : "82px ")}
     );
+  }
+  @media (min-width: 1440px) {
+    margin-top: 100px;
   }
 `;
 
@@ -436,5 +459,42 @@ const NumMove = styled.div`
 const Image = styled.img`
   width: 100%;
 `;
+const But1 = styled.button`
+  @media (min-width: 768px) {
+    width: 127px;
 
+    height: 52px;
+    color: #fcfcfc;
+    background-color: #fda214;
+    border: none;
+    font-size: 20px;
+    border-radius: 26px;
+    cursor: pointer;
+  }
+`;
+const But2 = styled.button`
+  @media (min-width: 768px) {
+    width: 149px;
+    height: 52px;
+    color: #dfe7ec;
+    font-size: 20px;
+    color: #304859;
+    border: none;
+    border-radius: 26px;
+    cursor: pointer;
+    &:hover {
+      background-color: #6395b8;
+      color: #fcfcfc;
+    }
+  }
+`;
+const But3 = styled.div`
+  @media (min-width: 768px) {
+    display: flex;
+    gap: 16px;
+  }
+  @media (max-width: 767px) {
+    display: none;
+  }
+`;
 export default Game;

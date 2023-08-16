@@ -131,6 +131,8 @@ const Select = styled.h1`
   padding: 24px;
   @media (min-width: 768px) {
     font-size: 20px;
+    padding: 0px;
+    margin-left: 24px;
   }
 `;
 const HeadSection = styled.div`
@@ -138,6 +140,9 @@ const HeadSection = styled.div`
   gap: 11px;
   padding-left: 24px;
   padding-right: 24px;
+  @media (min-width: 768px) {
+    margin-top: 16px;
+  }
 `;
 const Number = styled.button<{ isChoose: boolean }>`
   width: 134px;
@@ -152,6 +157,11 @@ const Number = styled.button<{ isChoose: boolean }>`
     height: 52px;
     font-size: 26px;
   }
+  @media (min-width: 1440px) {
+    &:hover {
+      background-color: #6395b8;
+    }
+  }
 `;
 const Cards = styled.button<{ isChoose: boolean }>`
   width: 134px;
@@ -165,6 +175,11 @@ const Cards = styled.button<{ isChoose: boolean }>`
     width: 256px;
     height: 52px;
     font-size: 26px;
+  }
+  @media (min-width: 1440px) {
+    &:hover {
+      background-color: #6395b8;
+    }
   }
 `;
 const Title = styled.h1`
@@ -194,6 +209,11 @@ const Num = styled.button<{ isSelected: boolean }>`
     width: 119px;
     height: 52px;
     font-size: 26px;
+  }
+  @media (min-width: 1440px) {
+    &:hover {
+      background-color: #6395b8;
+    }
   }
 `;
 const Grid = styled.h1`
@@ -226,6 +246,11 @@ const GridSize = styled.button<{ isSelected: boolean }>`
     height: 52px;
     font-size: 26px;
   }
+  @media (min-width: 1440px) {
+    &:hover {
+      background-color: #6395b8;
+    }
+  }
 `;
 const Start = styled.button`
   width: 279px;
@@ -237,13 +262,15 @@ const Start = styled.button`
   font-size: 18px;
   color: #fcfcfc;
 
-  margin: auto;
+  margin-left: 24px;
+
   margin-top: 32px;
   cursor: pointer;
   underline: none;
   @media (min-width: 768px) {
     width: 541px;
-    height: 52px;
+    height: 70px;
     font-size: 26px;
+    margin-left: 0px;
   }
 `;
