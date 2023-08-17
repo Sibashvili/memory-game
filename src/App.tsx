@@ -2,8 +2,8 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { useState } from "react";
 import "./App.css";
 import Game from "./Components/GamePage";
-
 import StartPage from "./Components/StartPage";
+
 function App() {
   const [selectedGridSize, setSelectedGridSize] = useState<number>(0);
   const [selectedOption, setSelectedOption] = useState<string>("Numbers");
