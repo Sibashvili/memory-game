@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useState } from "react";
 import "./App.css";
-import GamePage from "./Components/GamePage";
+import Game from "./Components/GamePage";
 
 import StartPage from "./Components/StartPage";
 function App() {
@@ -29,7 +29,7 @@ function App() {
         <Route
           path="/gamepage"
           element={
-            <GamePage
+            <Game
               selectedGridSize={selectedGridSize}
               selectedOption={selectedOption}
               selectedNumPlayer={selectedNumPlayer}
